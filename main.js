@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 
 const createWindow = () => {
@@ -6,8 +6,13 @@ const createWindow = () => {
     width: 1280,
     height: 720,
     resizable: false,
+    frame: false,
+    movable: true,
+    devTools: false,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: true,
+      contextIsolation: false,
     },
   });
 
@@ -24,4 +29,9 @@ app.whenReady().then(() => {
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
+});
+
+ipcMain.on("close-app", function (e) {
+  e.preventDefault();
+  app.quit();
 });

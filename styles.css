@@ -44,6 +44,12 @@ body {
   padding: 30px;
 
   font-family: "Mantinia Regular", "Times New Roman", Times, serif;
+
+  -webkit-app-region: drag;
+}
+
+body > * {
+  -webkit-app-region: no-drag;
 }
 
 h1 {
@@ -53,6 +59,8 @@ h1 {
   text-align: center;
 
   color: #fff;
+
+  -webkit-app-region: drag;
 }
 
 h2 {
@@ -62,6 +70,8 @@ h2 {
   text-align: center;
 
   color: #fff;
+
+  -webkit-app-region: drag;
 }
 
 h3 {
@@ -75,6 +85,8 @@ h3 {
 
   color: #fff;
   border-bottom: solid 1px rgba(142, 140, 128, 0.75);
+
+  -webkit-app-region: drag;
 }
 
 ul {
@@ -114,7 +126,15 @@ li {
     rgba(0, 0, 0, 1) 90%,
     rgba(0, 0, 0, 0) 100%
   );
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 1) 10%,
+    rgba(0, 0, 0, 1) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
   -webkit-mask-size: 100% 80px;
+  mask-size: 100% 80px;
 }
 
 li.active,
@@ -196,6 +216,7 @@ input {
   align-items: center;
   white-space: nowrap;
   margin-top: 40px;
+  width: auto;
 }
 
 .character-list {
@@ -220,7 +241,15 @@ input {
     rgba(0, 0, 0, 1) 90%,
     rgba(0, 0, 0, 0) 100%
   );
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 1) 10%,
+    rgba(0, 0, 0, 1) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
   -webkit-mask-size: 100% 80px;
+  mask-size: 100% 80px;
 }
 
 .character-list > p {
@@ -245,7 +274,15 @@ input {
     rgba(0, 0, 0, 1) 90%,
     rgba(0, 0, 0, 0) 100%
   );
+  mask-image: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 1) 10%,
+    rgba(0, 0, 0, 1) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
   -webkit-mask-size: 100% 50px;
+  mask-size: 100% 50px;
 
   transition: all 0.1s;
 }
@@ -267,11 +304,37 @@ input {
   margin: auto 0 20px;
 }
 
-.open {
+.open,
+.init {
   visibility: visible;
   opacity: 1;
 }
 
+.init {
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 1);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  -webkit-mask-image: none;
+  mask-image: none;
+  z-index: 1;
+}
+
 .modal.character-name ul li input {
   height: 30px;
+}
+
+.close-app {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: auto;
+  height: 30px;
+  padding: 4px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }
