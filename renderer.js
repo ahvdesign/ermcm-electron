@@ -99,4 +99,17 @@ function updateData(data, filename) {
   });
 }
 
+function duplicateMemoryCard() {
+  // TODO: make this work first then add to the initialization function, just need to duplicate the active card
+}
+
 // TODO: hook up all interface buttons with functions that update memoryCards
+
+// Swap save routine
+
+// Check to make sure save files directory exists + Make save files directory if it doesnt
+// make sure no file in directory named "copy" exists + delete "copy" it if it does exist
+// Make copy of main save named "copy"
+// Delete "active main save"
+// Move "chosen save" to "active main save" probably via renaming
+// rename "copy" to "chosen save slot"
