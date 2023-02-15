@@ -1,0 +1,24 @@
+{
+  "name": "ermcm-electron",
+  "version": "1.0.0",
+  "description": "A save file manager for Elden Ring.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "build": "npx electron-forge import",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "author": "Alexander Henriquez",
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.5",
+    "@electron-forge/maker-deb": "^6.0.5",
+    "@electron-forge/maker-rpm": "^6.0.5",
+    "@electron-forge/maker-squirrel": "^6.0.5",
+    "@electron-forge/maker-zip": "^6.0.5",
+    "electron": "^23.0.0"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0"
+  }
+}

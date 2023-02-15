@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="assets/GoldenOrder.ico" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Elden Ring Memory Card Manager</title>
+  </head>
+  <body>
+    <ul>
+      <li>
+        <p>Active Slot</p>
+        <button modal="slot-list">Slot 1</button>
+      </li>
+      <li>
+        <p>Slot Name</p>
+        <button modal="slot-name">Main Lords</button>
+      </li>
+      <li>
+        <p></p>
+        <button>Duplicate Slot</button>
+      </li>
+      <li>
+        <p>Characters</p>
+        <button modal="character-name">Edit Characters</button>
+      </li>
+      <div class="character-list">
+        <p>Elden Lord</p>
+        <p>Sir Rollington</p>
+        <p>Ungabunga</p>
+        <p>Magic is Alright</p>
+        <p>The Wall</p>
+        <p>Charles Barkley</p>
+        <p>Pikachu</p>
+        <p>Samurai Enthusiast</p>
+        <p>Archer</p>
+        <p>Chungus Maximus</p>
+      </div>
+      <button>Play Elden Ring</button>
+    </ul>
+    <div class="title">
+      <h1>
+        Elden Ring<br />
+        Memory Card Manager
+      </h1>
+      <h2>A tool for Elden Lords, made by Alex</h2>
+    </div>
+
+    <!-- MODALS -->
+    <div class="modal slot-list">
+      <ul>
+        <h3>Memory Card List</h3>
+        <li>
+          <p>1: Main Lords</p>
+          <button>Set Active</button>
+        </li>
+        <li>
+          <p>2: PvP</p>
+          <button>Set Active</button>
+        </li>
+        <li>
+          <p>3: Convergence Mod</p>
+          <button>Set Active</button>
+        </li>
+        <button modal="slot-list">Finish</button>
+      </ul>
+    </div>
+
+    <div class="modal slot-name">
+      <ul>
+        <h3>Slot Name</h3>
+        <li>
+          <p>Active Slot Name</p>
+          <input type="text" />
+        </li>
+        <button modal="slot-name">Finish</button>
+      </ul>
+    </div>
+
+    <div class="modal character-name">
+      <ul>
+        <h3>Character Names</h3>
+        <li>
+          <p>Character 1</p>
+          <input type="text" />
+        </li>
+        <li>
+          <p>Character 2</p>
+          <input type="text" />
+        </li>
+        <li>
+          <p>Character 3</p>
+          <input type="text" />
+        </li>
+        <li>
+          <p>Character 4</p>
+          <input type="text" />
+        </li>
+        <li>
+          <p>Character 5</p>
+          <input type="text" />
+        </li>
+        <li>
+          <p>Character 6</p>
+          <input type="text" />
+        </li>
+        <li>
+          <p>Character 7</p>
+          <input type="text" />
+        </li>
+        <li>
+          <p>Character 8</p>
+          <input type="text" />
+        </li>
+        <li>
+          <p>Character 9</p>
+          <input type="text" />
+        </li>
+        <li>
+          <p>Character 10</p>
+          <input type="text" />
+        </li>
+        <button modal="character-name">Finish</button>
+      </ul>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
