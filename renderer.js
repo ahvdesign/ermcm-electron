@@ -241,6 +241,27 @@ function updateUI() {
   const char10 = document.getElementById("char10");
   character10.innerHTML = data.activeSlot.characters.ten;
   char10.innerHTML = data.activeSlot.characters.ten;
+
+  const charLabel1 = document.getElementById("charLabel1");
+  charLabel1.value = data.activeSlot.characters.one;
+  const charLabel2 = document.getElementById("charLabel2");
+  charLabel2.value = data.activeSlot.characters.two;
+  const charLabel3 = document.getElementById("charLabel3");
+  charLabel3.value = data.activeSlot.characters.three;
+  const charLabel4 = document.getElementById("charLabel4");
+  charLabel4.value = data.activeSlot.characters.four;
+  const charLabel5 = document.getElementById("charLabel5");
+  charLabel5.value = data.activeSlot.characters.five;
+  const charLabel6 = document.getElementById("charLabel6");
+  charLabel6.value = data.activeSlot.characters.six;
+  const charLabel7 = document.getElementById("charLabel7");
+  charLabel7.value = data.activeSlot.characters.seven;
+  const charLabel8 = document.getElementById("charLabel8");
+  charLabel8.value = data.activeSlot.characters.eight;
+  const charLabel9 = document.getElementById("charLabel9");
+  charLabel9.value = data.activeSlot.characters.nine;
+  const charLabel10 = document.getElementById("charLabel10");
+  charLabel10.value = data.activeSlot.characters.ten;
 }
 
 function initializeUI() {
@@ -324,9 +345,9 @@ function setActiveSlot(slotNumber) {
   // Logic
   data.slots.forEach((slot) => {
     if (slot.id.toString() === slotNumber) {
-      const newData = data;
-      newData.activeSlot = slot;
-      writeJsonFileSync(JSON.stringify(newData));
+      data.activeSlot = slot;
+      console.log(data.activeSlot);
+      writeJsonFileSync(JSON.stringify(data));
     }
   });
 
