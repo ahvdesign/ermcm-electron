@@ -185,6 +185,15 @@ function updateUI() {
 
   const slotNameMenuButton = document.getElementById("slotNameMenuButton");
   slotNameMenuButton.innerHTML = `${data.activeSlot.name}`;
+
+  const slotNameList = document.querySelectorAll("#slotList > ul > li > p");
+  slotNameList.forEach((item) => {
+    data.slots.forEach((slot) => {
+      if (slot.id.toString() === item.dataset.slot.toString()) {
+        item.innerHTML = `${item.dataset.slot}: ${slot.name}`;
+      }
+    });
+  });
 }
 
 function initializeUI() {
