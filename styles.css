@@ -27,6 +27,7 @@ body {
 
 html {
   font-size: 62.5%;
+  user-select: none;
 }
 
 /* MAIN */
@@ -324,6 +325,10 @@ input {
 
 .modal.character-name ul li input {
   height: 30px;
+}
+
+.modal.slot-list ul li {
+  margin-top: 0;
 }
 
 .close-app {

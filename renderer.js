@@ -1,115 +1,292 @@
 const { ipcRenderer } = require("electron");
-const {
-  writeFile,
-  existsSync,
-  readFileSync,
-  readdirSync,
-  lstatSync,
-} = require("fs");
-const process = require("process");
+const fs = require("fs");
+
+const gameSavePath = process.env.APPDATA + "\\EldenRing";
+const slotsFilePath = gameSavePath + "\\saveSlotData.json";
+
+initializeApp();
+
+function initializeApp() {
+  // Allow the user to quit in case shit hits the fan
+  const closeButtons = document.querySelectorAll(".close-app");
+  closeButtons.forEach((button) => {
+    button.addEventListener("click", closeApp);
+  });
+
+  // Set up the config file if one doesn't exist
+  if (fs.existsSync(slotsFilePath)) {
+    removeInitScreen();
+    initializeUI();
+    return;
+  } else {
+    const saveFolder = findFolderWithOnlyNumbers(gameSavePath);
+
+    const template = JSON.stringify({
+      saveFolder: `${gameSavePath}\\${saveFolder}`,
+      activeSlot: {
+        id: 1,
+        name: "Slot",
+        characters: {
+          one: "",
+          two: "",
+          three: "",
+          four: "",
+          five: "",
+          six: "",
+          seven: "",
+          eight: "",
+          nine: "",
+          ten: "",
+        },
+      },
+      slots: [
+        {
+          id: 1,
+          name: "Slot",
+          characters: {
+            one: "",
+            two: "",
+            three: "",
+            four: "",
+            five: "",
+            six: "",
+            seven: "",
+            eight: "",
+            nine: "",
+            ten: "",
+          },
+        },
+        {
+          id: 2,
+          name: "Slot",
+          characters: {
+            one: "",
+            two: "",
+            three: "",
+            four: "",
+            five: "",
+            six: "",
+            seven: "",
+            eight: "",
+            nine: "",
+            ten: "",
+          },
+        },
+        {
+          id: 3,
+          name: "Slot",
+          characters: {
+            one: "",
+            two: "",
+            three: "",
+            four: "",
+            five: "",
+            six: "",
+            seven: "",
+            eight: "",
+            nine: "",
+            ten: "",
+          },
+        },
+        {
+          id: 4,
+          name: "Slot",
+          characters: {
+            one: "",
+            two: "",
+            three: "",
+            four: "",
+            five: "",
+            six: "",
+            seven: "",
+            eight: "",
+            nine: "",
+            ten: "",
+          },
+        },
+        {
+          id: 5,
+          name: "Slot",
+          characters: {
+            one: "",
+            two: "",
+            three: "",
+            four: "",
+            five: "",
+            six: "",
+            seven: "",
+            eight: "",
+            nine: "",
+            ten: "",
+          },
+        },
+        {
+          id: 6,
+          name: "Slot",
+          characters: {
+            one: "",
+            two: "",
+            three: "",
+            four: "",
+            five: "",
+            six: "",
+            seven: "",
+            eight: "",
+            nine: "",
+            ten: "",
+          },
+        },
+        {
+          id: 7,
+          name: "Slot",
+          characters: {
+            one: "",
+            two: "",
+            three: "",
+            four: "",
+            five: "",
+            six: "",
+            seven: "",
+            eight: "",
+            nine: "",
+            ten: "",
+          },
+        },
+        {
+          id: 8,
+          name: "Slot",
+          characters: {
+            one: "",
+            two: "",
+            three: "",
+            four: "",
+            five: "",
+            six: "",
+            seven: "",
+            eight: "",
+            nine: "",
+            ten: "",
+          },
+        },
+      ],
+    });
+
+    writeJsonFileSync(template);
+    removeInitScreen();
+    initializeUI();
+  }
+}
+
+function updateUI() {
+  const data = JSON.parse(readJsonFileSync());
+
+  const slotButton = document.querySelector("#slotMenuButton");
+  slotButton.innerHTML = `Slot ${data.activeSlot.id}`;
+
+  const slotNameMenuButton = document.getElementById("slotNameMenuButton");
+  slotNameMenuButton.innerHTML = `${data.activeSlot.name}`;
+}
+
+function initializeUI() {
+  // const data = JSON.parse(readJsonFileSync());
+
+  //   - Slot List 1-8
+  const slotButtons = document.querySelectorAll(".slotButton");
+  slotButtons.forEach((slotButton) => {
+    slotButton.addEventListener("click", function (e) {
+      e.preventDefault();
+      setActiveSlot(slotButton.dataset.slot);
+    });
+  });
+
+  //   - Slot Name Input
+  const activeSlotNameSubmit = document.querySelector("#activeSlotNameSubmit");
+  const activeSlotNameInput = document.getElementById("activeSlotNameInput");
+  activeSlotNameSubmit.addEventListener("click", function (e) {
+    e.preventDefault();
+    updateActiveSlotName(activeSlotNameInput.value.toString());
+  });
+
+  // - Duplicate Slot Button
+  // - Edit Characters Button
+  //   - Character Name Input 1-10
+  // - Play Button
+
+  updateUI();
+}
+
+function removeInitScreen() {
+  const initModal = document.querySelector(".init");
+  initModal.classList.remove("init");
+}
 
 function closeApp(e) {
   e.preventDefault();
   ipcRenderer.send("close-app");
 }
 
-document.querySelector(".close-app").addEventListener("click", closeApp);
+function findFolderWithOnlyNumbers(path) {
+  const folderNames = fs.readdirSync(path);
 
-const saveLocation = process.env.APPDATA + "\\EldenRing\\memoryCards.json";
-const dir = process.env.APPDATA + "\\EldenRing";
-
-function getDefaultSave(directory) {
-  let files = readdirSync(directory);
-  for (const file of files) {
-    const filePath = `${directory}\\${file}`;
-
-    if (lstatSync(filePath).isDirectory() && /^\d+$/.test(file)) {
-      return filePath;
+  for (const folderName of folderNames) {
+    if (/^\d+$/.test(folderName)) {
+      return folderName;
     }
   }
+
+  return null;
 }
 
-let isInitialized = existsSync(saveLocation);
+function readJsonFileSync() {
+  // Check if file exists
+  if (!fs.existsSync(slotsFilePath)) {
+    console.error(`Error: file not found at ${slotsFilePath}`);
+    return null;
+  }
 
-const initializeButton = document.querySelector("#initialize");
+  // Read file synchronously and parse as JSON
+  const fileData = fs.readFileSync(slotsFilePath, "utf-8");
+  const jsonData = JSON.parse(fileData);
 
-if (isInitialized == false) {
-  initializeButton.addEventListener("click", function (e) {
-    e.preventDefault();
+  return jsonData;
+}
 
-    let defaultSlot = getDefaultSave(dir);
+function writeJsonFileSync(data) {
+  const jsonString = JSON.stringify(data, null, 2);
 
-    const initialTemplate = `
-    {
-        "saveLocation": "${saveLocation.replace(/\\/g, "\\\\")}",
-        "defaultSlot": ${JSON.stringify(defaultSlot)},
-        "activeSlot": "1",
-        "slots": [
-            {
-                "name": "1",
-                "characters": {
-                    "one": "",
-                    "two": "",
-                    "three": "",
-                    "four": "",
-                    "five": "",
-                    "six": "",
-                    "seven": "",
-                    "eight": "",
-                    "nine": "",
-                    "ten": ""
-                }
-            }
-        ]
+  fs.writeFileSync(slotsFilePath, jsonString, { encoding: "utf8" });
+}
+
+function setActiveSlot(slotNumber) {
+  // Read data and stop if it isn't found
+  const data = JSON.parse(readJsonFileSync());
+  if (!data) {
+    console.error(`Could not read JSON data from "${slotsFilePath}"`);
+    return;
+  }
+
+  // Logic
+  data.slots.forEach((slot) => {
+    if (slot.id.toString() === slotNumber) {
+      const newData = data;
+      newData.activeSlot = slot;
+      writeJsonFileSync(JSON.stringify(newData));
     }
-    `;
-
-    updateMemoryCards(initialTemplate);
-
-    writeFile(saveLocation, initialTemplate, (err) => {
-      if (err) {
-        console.log(err);
-      }
-    });
-
-    const initModal = document.querySelector(".init");
-    initModal.classList.remove("init");
   });
-} else {
-  let data = readFileSync(saveLocation, "utf-8");
-  updateMemoryCards(data);
-  const initModal = document.querySelector(".init");
-  initModal.classList.remove("init");
 
-  updateData(memoryCards, saveLocation);
+  updateUI();
 }
 
-function updateMemoryCards(data) {
-  memoryCards = JSON.parse(data);
-  return memoryCards;
-}
+function updateActiveSlotName(name) {
+  const data = JSON.parse(readJsonFileSync());
 
-function updateData(data, filename) {
-  const jsonData = JSON.stringify(data);
+  // Find the active slot in the data
+  data.slots.forEach((slot) => {
+    if (slot.id === data.activeSlot.id) {
+      slot.name = name;
 
-  writeFile(filename, jsonData, (err) => {
-    if (err) {
-      console.log(err);
+      writeJsonFileSync(JSON.stringify(data));
+      setActiveSlot(slot.id.toString());
     }
   });
 }
-
-function duplicateMemoryCard() {
-  // TODO: make this work first then add to the initialization function, just need to duplicate the active card
-}
-
-// TODO: hook up all interface buttons with functions that update memoryCards
-
-// Swap save routine
-
-// Check to make sure save files directory exists + Make save files directory if it doesnt
-// make sure no file in directory named "copy" exists + delete "copy" it if it does exist
-// Make copy of main save named "copy"
-// Delete "active main save"
-// Move "chosen save" to "active main save" probably via renaming
-// rename "copy" to "chosen save slot"

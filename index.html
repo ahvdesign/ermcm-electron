@@ -12,16 +12,16 @@
     <ul>
       <li>
         <p>Active Slot</p>
-        <button modal="slot-list">Slot 1</button>
+        <button modal="slot-list" id="slotMenuButton">Slot 1</button>
       </li>
       <li>
         <p>Slot Name</p>
-        <button modal="slot-name">Main Lords</button>
+        <button modal="slot-name" id="slotNameMenuButton">Main Lords</button>
       </li>
-      <li>
+      <!-- <li>
         <p></p>
         <button>Duplicate Slot</button>
-      </li>
+      </li> -->
       <li>
         <p>Characters</p>
         <button modal="character-name">Edit Characters</button>
@@ -52,24 +52,60 @@
     <div class="modal init">
       <ul>
         <h3>No Memory Cards Found</h3>
-        <button id="initialize">Initialize</button>
+        <li><p>Initializing data, please wait...</p></li>
       </ul>
     </div>
 
-    <div class="modal slot-list">
+    <div class="modal slot-list" id="slotList">
       <ul>
         <h3>Memory Card List</h3>
         <li>
           <p>1: Main Lords</p>
-          <button>Set Active</button>
+          <button modal="slot-list" class="slotButton" data-slot="1">
+            Set Active
+          </button>
         </li>
         <li>
           <p>2: PvP</p>
-          <button>Set Active</button>
+          <button modal="slot-list" class="slotButton" data-slot="2">
+            Set Active
+          </button>
         </li>
         <li>
           <p>3: Convergence Mod</p>
-          <button>Set Active</button>
+          <button modal="slot-list" class="slotButton" data-slot="3">
+            Set Active
+          </button>
+        </li>
+        <li>
+          <p>4: Unused</p>
+          <button modal="slot-list" class="slotButton" data-slot="4">
+            Set Active
+          </button>
+        </li>
+        <li>
+          <p>5: Unused</p>
+          <button modal="slot-list" class="slotButton" data-slot="5">
+            Set Active
+          </button>
+        </li>
+        <li>
+          <p>6: Unused</p>
+          <button modal="slot-list" class="slotButton" data-slot="6">
+            Set Active
+          </button>
+        </li>
+        <li>
+          <p>7: Unused</p>
+          <button modal="slot-list" class="slotButton" data-slot="7">
+            Set Active
+          </button>
+        </li>
+        <li>
+          <p>8: Unused</p>
+          <button modal="slot-list" class="slotButton" data-slot="8">
+            Set Active
+          </button>
         </li>
         <button modal="slot-list">Finish</button>
       </ul>
@@ -80,9 +116,9 @@
         <h3>Slot Name</h3>
         <li>
           <p>Active Slot Name</p>
-          <input type="text" />
+          <input id="activeSlotNameInput" type="text" />
         </li>
-        <button modal="slot-name">Finish</button>
+        <button id="activeSlotNameSubmit" modal="slot-name">Finish</button>
       </ul>
     </div>
 
