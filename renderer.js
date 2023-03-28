@@ -1,5 +1,6 @@
 const { ipcRenderer } = require("electron");
 const fs = require("fs");
+const path = require("path");
 
 const gameSavePath = process.env.APPDATA + "\\EldenRing";
 const slotsFilePath = gameSavePath + "\\saveSlotData.json";
@@ -21,13 +22,13 @@ function initializeApp() {
   } else {
     const saveFolder = findFolderWithOnlyNumbers(gameSavePath);
 
-    const template = JSON.stringify({
+    const template = {
       saveFolder: `${gameSavePath}\\${saveFolder}`,
       activeSlot: {
         id: 1,
-        name: "Slot",
+        name: "Slot 1",
         characters: {
-          one: "",
+          one: "Character 1",
           two: "",
           three: "",
           four: "",
@@ -42,9 +43,9 @@ function initializeApp() {
       slots: [
         {
           id: 1,
-          name: "Slot",
+          name: "Slot 1",
           characters: {
-            one: "",
+            one: "Character 1",
             two: "",
             three: "",
             four: "",
@@ -58,7 +59,7 @@ function initializeApp() {
         },
         {
           id: 2,
-          name: "Slot",
+          name: "Slot 2",
           characters: {
             one: "",
             two: "",
@@ -74,7 +75,7 @@ function initializeApp() {
         },
         {
           id: 3,
-          name: "Slot",
+          name: "Slot 3",
           characters: {
             one: "",
             two: "",
@@ -90,7 +91,7 @@ function initializeApp() {
         },
         {
           id: 4,
-          name: "Slot",
+          name: "Slot 4",
           characters: {
             one: "",
             two: "",
@@ -106,7 +107,7 @@ function initializeApp() {
         },
         {
           id: 5,
-          name: "Slot",
+          name: "Slot 5",
           characters: {
             one: "",
             two: "",
@@ -122,7 +123,7 @@ function initializeApp() {
         },
         {
           id: 6,
-          name: "Slot",
+          name: "Slot 6",
           characters: {
             one: "",
             two: "",
@@ -138,7 +139,7 @@ function initializeApp() {
         },
         {
           id: 7,
-          name: "Slot",
+          name: "Slot 7",
           characters: {
             one: "",
             two: "",
@@ -154,7 +155,7 @@ function initializeApp() {
         },
         {
           id: 8,
-          name: "Slot",
+          name: "Slot 8",
           characters: {
             one: "",
             two: "",
@@ -169,12 +170,80 @@ function initializeApp() {
           },
         },
       ],
-    });
+    };
 
-    writeJsonFileSync(template);
+    writeJsonFileSync(JSON.stringify(template));
+    backupSaveFiles(saveFolder);
+    makeSlotFolders();
     removeInitScreen();
     initializeUI();
   }
+}
+
+function makeSlotFolders() {
+  // create a new folder in gameSavePath
+  const saveFolder = gameSavePath + "\\Slot ";
+  for (let i = 1; i < 9; i++) {
+    iPath = saveFolder + i;
+    fs.mkdirSync(iPath);
+  }
+
+  const slotOne = saveFolder + "1";
+  const activeSlotFolder = `${gameSavePath}\\${findFolderWithOnlyNumbers(
+    gameSavePath
+  )}`;
+
+  copyFolderContentsSync(activeSlotFolder, slotOne);
+}
+
+function backupSaveFiles(saveFolder) {
+  // create a new folder in gameSavePath
+  const backupFolder = gameSavePath + "\\backup";
+
+  // if the folder already exists, don't overwrite it
+  if (fs.existsSync(backupFolder)) {
+    return;
+  }
+
+  fs.mkdirSync(backupFolder);
+  // copy saveFolder to backupFolder
+  const source = gameSavePath + "\\" + saveFolder;
+  const destination = backupFolder + "\\" + saveFolder;
+  copyFolderSync(source, destination);
+}
+
+function copyFolderSync(source, destination) {
+  if (!fs.existsSync(destination)) {
+    fs.mkdirSync(destination);
+  }
+
+  fs.readdirSync(source).forEach(function (file) {
+    const sourcePath = path.join(source, file);
+    const destinationPath = path.join(destination, file);
+
+    if (fs.statSync(sourcePath).isDirectory()) {
+      copyFolderSync(sourcePath, destinationPath);
+    } else {
+      fs.copyFileSync(sourcePath, destinationPath);
+    }
+  });
+}
+
+function copyFolderContentsSync(source, destination) {
+  if (!fs.existsSync(destination)) {
+    fs.mkdirSync(destination);
+  }
+
+  fs.readdirSync(source).forEach(function (file) {
+    const sourcePath = path.join(source, file);
+    const destinationPath = path.join(destination, file);
+
+    if (fs.statSync(sourcePath).isDirectory()) {
+      copyFolderContentsSync(sourcePath, destinationPath);
+    } else {
+      fs.copyFileSync(sourcePath, destinationPath);
+    }
+  });
 }
 
 function updateUI() {
@@ -284,6 +353,13 @@ function initializeUI() {
     updateActiveSlotName(activeSlotNameInput.value.toString());
   });
 
+  activeSlotNameInput.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      updateActiveSlotName(activeSlotNameInput.value.toString());
+    }
+  });
+
   // - Duplicate Slot Button
   // - Edit Characters Button
   //   - Character Name Input 1-10
@@ -294,7 +370,7 @@ function initializeUI() {
 
 function removeInitScreen() {
   const initModal = document.querySelector(".init");
-  initModal.classList.remove("init");
+  // initModal.classList.remove("init");
 }
 
 function closeApp(e) {
@@ -346,12 +422,34 @@ function setActiveSlot(slotNumber) {
   data.slots.forEach((slot) => {
     if (slot.id.toString() === slotNumber) {
       data.activeSlot = slot;
-      console.log(data.activeSlot);
       writeJsonFileSync(JSON.stringify(data));
     }
   });
 
+  swapSlotFolders(slotNumber);
+
   updateUI();
+}
+
+function swapSlotFolders(slotNumber) {
+  const slotFolderName = "Slot " + slotNumber;
+  const saveFolder = findFolderWithOnlyNumbers(gameSavePath);
+  swapFolderNamesSync(gameSavePath, slotFolderName, saveFolder);
+}
+
+function swapFolderNamesSync(dirPath, firstFolderName, secondFolderName) {
+  const firstFolderPath = path.join(dirPath, firstFolderName);
+  const secondFolderPath = path.join(dirPath, secondFolderName);
+  const tmpFolderPath = path.join(dirPath, "tmp");
+
+  if (fs.existsSync(firstFolderPath) && fs.existsSync(secondFolderPath)) {
+    fs.renameSync(firstFolderPath, tmpFolderPath);
+    fs.renameSync(secondFolderPath, firstFolderPath);
+    fs.renameSync(tmpFolderPath, secondFolderPath);
+    console.log(`Swapped ${firstFolderName} and ${secondFolderName}`);
+  } else {
+    console.log(`Failed to swap ${firstFolderName} and ${secondFolderName}`);
+  }
 }
 
 function updateActiveSlotName(name) {
@@ -361,6 +459,10 @@ function updateActiveSlotName(name) {
   data.slots.forEach((slot) => {
     if (slot.id === data.activeSlot.id) {
       slot.name = name;
+
+      if (slot.name === "") {
+        slot.name = " ";
+      }
 
       writeJsonFileSync(JSON.stringify(data));
       setActiveSlot(slot.id.toString());
